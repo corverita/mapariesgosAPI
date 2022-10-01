@@ -2,3 +2,4 @@ django==3.2.15
 djangorestframework==3.13.1
 pillow
 mysqlclient
+unidecode
