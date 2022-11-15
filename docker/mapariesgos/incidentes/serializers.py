@@ -21,7 +21,7 @@ class MunicipioSerializer(serializers.ModelSerializer):
 class IncidenteSerializer(serializers.ModelSerializer):
     class Meta:
         model= Incidente
-        fields = ['latitud','longitud','fecha','publicador','tipo_incidente', 'municipio']
+        fields = ['id','latitud','longitud','fecha','publicador','tipo_incidente', 'municipio']
         
     def to_representation(self, instance):
         response = super().to_representation(instance)

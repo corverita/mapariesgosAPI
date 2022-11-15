@@ -1,0 +1,22 @@
+version: '3.3'
+
+services:
+  mapariesgos:
+    image: corverita/mapariesgos:latest
+    ports:
+      - 80:80
+      - 8080:8080
+      # host : invitado
+    restart: always
+
+  # Pendiente agregar a este servicio la configuracion con otro dockerfile, de tal manera que se inicialice con municipios y estados.
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: mapariesgos
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Contrasena7654/(%&/
+      MYSQL_ROOT_PASSWORD: admin1234
+    ports:
+      - 3320:3306
