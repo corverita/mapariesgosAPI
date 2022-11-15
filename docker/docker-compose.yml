@@ -2,21 +2,34 @@ version: '3.3'
 
 services:
   mapariesgos:
-    image: corverita/mapariesgos:latest
+    container_name: mapariesgos
+    depends_on:
+      - db
+    image: corverita/mapariesgos
     ports:
       - 80:80
-      - 8080:8080
       # host : invitado
     restart: always
 
-  # Pendiente agregar a este servicio la configuracion con otro dockerfile, de tal manera que se inicialice con municipios y estados.
   db:
-    image: mariadb
-    restart: always
-    environment:
-      MYSQL_DATABASE: mapariesgos
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: Contrasena7654/(%&/
-      MYSQL_ROOT_PASSWORD: admin1234
+    container_name: mapariesgos-bd
+    image: corverita/mapariesgos-bd
     ports:
       - 3320:3306
+    restart: always
+
+
+    # Tras el encendido del compose hacer lo siguiente:
+
+    # Entrar en el contenedor de mapariesgos y cambiar el settings
+      # docker exec -it mapariesgos bash
+      # cd mapariesgos
+      # mv settings_prod.py settings.py         (Tambien cambiar el debug a False)
+      # python3 manage.py migrate
+
+    # Crear el superusuario
+      # python3 manage.py createsuperuser
+    
+    # Entrar en el contenedor de la base de datos y correr el script de municipios y estados
+      # docker exec -it mapariesgos-bd bash
+      # mysql -u root -p < /tmp/script_estados.sql

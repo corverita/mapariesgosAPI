@@ -18,6 +18,17 @@ RUN python3 manage.py collectstatic
 RUN python3 manage.py makemigrations
 RUN python3 manage.py migrate
 
+RUN chgrp -R www-data /app
+RUN chmod -R g+w /app
+
+RUN service apache2 restart
+
 EXPOSE 80
 
 CMD ["apachectl", "-D", "FOREGROUND"]
+
+
+# Futuros cambios al archivo
+
+## chgrp -R www-data /app
+## chmod -R g+w /app
