@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="container text-center">
+    <div class="">
+        <img src="{% static '/images/user_image.jpg' %}" alt="" class="" style="height:13rem; width:13rem;">
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="username" class="form-label">Usuario</label>
+        <div class="">
+            <input type="text" name="username" id="username">
+        </div>
+        <label for="password" class="form-label">Contraseña</label>
+        <div class="">
+            <input type="password" name="password" id="password">
+        </div>
+        <br>
+        {{ form.errors}}
+        <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+    </form>
+
+</div>
+{% endblock body %}
+
+
+{% block script %}
+{% endblock script %}

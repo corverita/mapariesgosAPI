@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-xz#!w^!zw_*=h_^8%$9#5o=73rl_^j2jfvx^dve5e)yw__7eow'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'incidentes'
+    'incidentes',
+    'cliente_web',
+    'usuarios'
 ]
 
 MIDDLEWARE = [
@@ -79,15 +81,12 @@ WSGI_APPLICATION = 'mapariesgos.wsgi.application'
 
 
 DATABASES = {
-    'default':{
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME':'mapariesgos',
-        'USER':'admin',
-        'PASSWORD':'Contrasena7654/(%&/',
-        'HOST':'db',
-        'PORT':3306
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation
