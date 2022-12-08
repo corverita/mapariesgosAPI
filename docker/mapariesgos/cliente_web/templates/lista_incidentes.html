@@ -115,43 +115,7 @@
         });
     }
 
-    function existeMarcador(lat,lnt, tipo_incidente){
-        var existe = false;
-        markers.forEach((marker) => {
-            if (marker.getPosition().lat() == lat && marker.getPosition().lng() == lnt && marker.getTitle() == tipo_incidente){
-                existe = true;
-            }
-        });
-        return existe;
-    }
-
     function redirigirMapa(tipo_incidente, lat, lng){
-        if (!existeMarcador(lat,lng, tipo_incidente)){
-            var icono;
-            switch (tipo_incidente){
-                case 'Ambulancia':
-                    icono = '{% static "images/icons/ambulancia icon.png" %}'
-                    break;
-                case 'Accidente de tráfico':
-                    icono = '{% static "images/icons/choque icon.png" %}'
-                    break;
-                case 'Tiroteo':
-                    icono = '{% static "images/icons/gun icon.png" %}'
-                    break;
-                case 'Asaltante':
-                    icono = '{% static "images/icons/robber icon.png" %}'
-                    break;
-                default:
-                    alert("El tipo de incidente no existe.")
-            }
-            var marker = createMarker(lat, lng, tipo_incidente, {url: icono, scaledSize: new google.maps.Size(25, 25)});
-            marker.addListener("click", () => {
-                infoWindow.close();
-                infoWindow.setContent(marker.getTitle());
-                infoWindow.open(marker.getMap(), marker);
-            });
-            markers.push(marker);
-        }
         map.setCenter({lat: parseFloat(lat), lng: parseFloat(lng)});
         map.setZoom(16);
     }
