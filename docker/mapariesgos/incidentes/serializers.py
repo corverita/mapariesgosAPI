@@ -1,4 +1,6 @@
 from .models import Incidente, Municipio
+from cliente_web.utils import iconos
+
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
@@ -28,6 +30,7 @@ class IncidenteSerializer(serializers.ModelSerializer):
         response['publicador'] = UserSerializer(instance.publicador).data
         response['tipo_incidente'] = instance.tipo_incidente.nombre
         response['municipio'] = MunicipioSerializer(instance.municipio).data
+        response['icon'] = iconos[str(instance.tipo_incidente)]
         return response
     
     def create(self, validated_data):

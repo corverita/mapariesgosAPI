@@ -1,0 +1,219 @@
+{% load static %}
+
+<br>
+<form id="map-filter-form">
+    {% csrf_token %}
+    <div class='d-flex text-center'>
+        <div class="col-4">
+            <i class="fa-solid fa-calendar icono"></i>
+        </div>
+        <div class="col-8 contenedor-fecha">
+            <input type="date" name="fecha" id="fecha">
+        </div>
+    </div>
+    <div class='d-flex text-center'>
+        <div class='col-6 p-4'>
+            <Select name='estado' id='estado' class="margin-0 form-select form-select-sm select-filtrar">
+                <option value="-1">Estado</option>
+                {% for estado in estados %}
+                    <option value="{{ estado.id }}">{{ estado.nombre }}</option>
+                {% endfor %}
+            </Select>
+    </div>
+    <div class='col-6 p-4'>
+        <Select name='municipio' id='municipio' class="margin-0 form-select form-select-sm select-filtrar">
+            <option value="-1">Municipio</option>
+            {% for municipio in municipios %}
+                <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+            {% endfor %}
+        </Select>
+    </div>
+</div>
+<div class='d-flex text-center'>
+    <label class="col-3">
+        <input type="radio" name="tipo_incidente" id="Ambulancia" value="1" checked>
+        <img src="{% static 'images/icons/ambulancia icon.png' %}" alt="Ambulancia" class="icon">
+        <br>
+        <p>
+            Ambulancia
+        </p>
+    </label>
+    <label class="col-3">
+        <input type="radio" name="tipo_incidente" id="Ambulancia" value="2">
+        <img src="{% static 'images/icons/choque icon.png' %}" alt="Accidente de tráfico" class="icon">
+        <br>
+        <p>
+            Accidente de
+            <br>
+            tráfico
+        </p>
+    </label>
+    <label class="col-3">
+        <input type="radio" name="tipo_incidente" id="Ambulancia" value="3">
+        <img src="{% static 'images/icons/gun icon.png' %}" alt="Tiroteo" class="icon">
+        <br>
+        <p>
+            Tiroteo
+        </p>
+    </label>
+    <label class="col-3">
+        <input type="radio" name="tipo_incidente" id="Ambulancia" value="4">
+        <img src="{% static 'images/icons/robber icon.png' %}" alt="Asaltante" class="icon">
+        <br>
+        <p>Asaltante</p>
+    </label>
+</div>
+
+<div class="d-block">
+    <div class="col-12 w-100 text-center">
+        <button class="btn btn-primary boton-filtrar p-3" type="submit">Filtrar</button>
+    </div>
+    <div class="d-flex">
+        <ul class="col-12 list-group lista" id="lista-incidentes">
+            {% for incidente in incidentes %}
+                <li class="list-group-item incidente p-3 my-0">
+                    <div class=" d-flex justify-content-between align-items-center" onclick="redirigirMapa('{{incidente.tipo_incidente}}','{{incidente.latitud}}','{{incidente.longitud}}')">
+                        <div class="text-start">
+                            <img src="{{incidente.icon}}" alt="{{incidente.tipo_incidente}}" class="icon">
+                        </div>
+                        <div class="text-center">
+                            {{incidente.tipo_incidente}}
+                        </div>
+                        <div class="text-center">
+                            {{incidente.publicador}}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+</form>
+
+<script>
+    let map;
+    var markers = [];
+    var infoWindow;
+
+    // TODO Conseguir que se carguen los marcadores iniciales.
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 22.767470686050675, lng: -102.59196597852653 },
+            zoom: 14,
+        });
+        infoWindow = new google.maps.InfoWindow();
+
+        {{lista_incidentes|safe}}.forEach((incidente) => {
+            var marker = createMarker(parseFloat(incidente.latitud), parseFloat(incidente.longitud), incidente.tipo_incidente, {url: incidente.icon, scaledSize: new google.maps.Size(25, 25)});
+            marker.addListener("click", () => {
+                infoWindow.close();
+                infoWindow.setContent(marker.getTitle());
+                infoWindow.open(marker.getMap(), marker);
+            });
+            markers.push(marker);
+        });
+    }
+
+    function existeMarcador(lat,lnt, tipo_incidente){
+        var existe = false;
+        markers.forEach((marker) => {
+            if (marker.getPosition().lat() == lat && marker.getPosition().lng() == lnt && marker.getTitle() == tipo_incidente){
+                existe = true;
+            }
+        });
+        return existe;
+    }
+
+    function redirigirMapa(tipo_incidente, lat, lng){
+        if (!existeMarcador(lat,lng, tipo_incidente)){
+            var icono;
+            switch (tipo_incidente){
+                case 'Ambulancia':
+                    icono = '{% static "images/icons/ambulancia icon.png" %}'
+                    break;
+                case 'Accidente de tráfico':
+                    icono = '{% static "images/icons/choque icon.png" %}'
+                    break;
+                case 'Tiroteo':
+                    icono = '{% static "images/icons/gun icon.png" %}'
+                    break;
+                case 'Asaltante':
+                    icono = '{% static "images/icons/robber icon.png" %}'
+                    break;
+                default:
+                    alert("El tipo de incidente no existe.")
+            }
+            var marker = createMarker(lat, lng, tipo_incidente, {url: icono, scaledSize: new google.maps.Size(25, 25)});
+            marker.addListener("click", () => {
+                infoWindow.close();
+                infoWindow.setContent(marker.getTitle());
+                infoWindow.open(marker.getMap(), marker);
+            });
+            markers.push(marker);
+        }
+        map.setCenter({lat: parseFloat(lat), lng: parseFloat(lng)});
+        map.setZoom(16);
+    }
+    
+    function createMarker(lat, lng, title, icon) {
+        var marker = new google.maps.Marker({
+            position: { lat: lat, lng: lng },
+            map: map,
+            icon: icon,
+            title: title,
+        });
+        return marker;
+    }
+
+    window.initMap = initMap;
+
+
+    
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const form = document.querySelector('#map-filter-form');
+
+    function sendForm(event){
+        event.preventDefault();
+        const request = new Request(
+            "{% url 'api:filtrar_incidentes' %}",{
+                method: 'POST',
+                headers: {'X-CSRFToken': csrfToken},
+                mode: 'same-origin',
+                body: new FormData(form)
+            }
+        );
+        fetch(request)
+            .then((response) => {
+                if (response.ok){
+                    return response.json();
+                }
+                throw new Error('No recibi respuesta del servidor');
+            })
+            .then(function(data) {
+                $("#lista-incidentes ul").empty();
+                markers.forEach(marker => marker.setMap(null));
+                data.forEach(element => {
+                    $("#lista-incidentes ul").append('<li class="list-group-item incidente p-3 my-0"><div class="d-flex justify-content-between align-items-center"><div class="text-start"><img src="'+element.icon+'" alt="'+element.tipo_incidente+'" class="icon"></div><div class="text-center">'+element.tipo_incidente+'</div><div class="text-center">'+element.publicador.username+'</div></div></li>').on(
+                        "click", () => {
+                            redirigirMapa(element.tipo_incidente, parseFloat(element.latitud), parseFloat(element.longitud));
+                        }
+                    )
+                    var new_marker = createMarker(parseFloat(element.latitud), parseFloat(element.longitud), element.tipo_incidente, {url: element.icon, scaledSize: new google.maps.Size(25, 25)});
+                    new_marker.addListener("click", () => {
+                        infoWindow.close();
+                        infoWindow.setContent(new_marker.getTitle());
+                        infoWindow.open(new_marker.getMap(), new_marker);
+                    });
+                    markers.push(new_marker);
+                });
+            });
+    }
+    form.addEventListener('submit', sendForm);
+
+
+    
+</script>
+
+

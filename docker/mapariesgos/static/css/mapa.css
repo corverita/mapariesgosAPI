@@ -1,0 +1,66 @@
+    /* Hide Radio */
+    [type=radio] { 
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* IMAGE STYLES */
+  [type=radio] + img {
+    cursor: pointer;
+  }
+
+  p{
+    font-size: small;
+  }
+  
+  /* CHECKED STYLES */
+  [type=radio]:checked + img {
+    box-shadow: 0 0 3px 3px blue;
+  }
+
+  .icon{
+    width: 3rem;
+    height: 3rem;
+  }
+
+  div > select{
+    text-align-last: center;
+  }
+
+  .lista{
+    height: 480px;
+    overflow: auto;
+  }
+
+  .margin-0{
+    margin: 0 auto;
+  }
+
+  .select-filtrar{
+    width:100%;
+    max-width:90%;
+  }
+
+  .boton-filtrar{
+    width: 90%;
+  }
+
+  .incidente{
+    width: 90%;
+    margin: auto;
+  }
+
+  .icono{
+    width: 40px;
+    height: 40px;
+  }
+
+  .contenedor-fecha{
+    padding-top: 10px;
+  }
+  #fecha{
+    text-align: center;
+    width: 85%;
+  }

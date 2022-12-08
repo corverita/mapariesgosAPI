@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'incidentes',
     'cliente_web',
-    'usuarios'
+    'usuarios',
+    'fontawesomefree'
 ]
 
 MIDDLEWARE = [

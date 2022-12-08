@@ -2,17 +2,19 @@
 {% load static %}
 
 {% block style %}
+<link rel="stylesheet" href="{% static 'css/mapa.css' %}">
 {% endblock style %}
 
 {% block body %}
 <div class="d-flex justify-content-center" style="height: 50rem;">
-    <div id="map" class="col-8 border h-100"></div>
-    <div id="lista-incidentes" class="col-4 border text-center">
-        Lista de Incidentes
+    <div id="map" class="col-6 border h-100"></div>
+    <div id="lista-incidentes" class="col-4 border">
+        {% include 'lista_incidentes.html' %}
     </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=KEY&callback=initMap" async defer></script>
-<script src="{% static 'js/map.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{API_KEY}}&callback=initMap" async defer></script>
+<!-- <script src="{% static 'js/map.js' %}"></script> -->
+
 
 {% endblock body %}

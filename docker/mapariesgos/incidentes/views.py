@@ -9,7 +9,6 @@ from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 class ListaIncidentes(APIView):
-    permission_classes = (IsAuthenticated,)
     
     def get(self, request):
         incidentes = Incidente.objects.all().order_by('-fecha')
@@ -47,7 +46,6 @@ class ListaIncidentes(APIView):
         return Response({'message':'No se pudo eliminar el incidente'},status=400)
         
 class EstadoMunicipio(APIView):
-    permission_classes = (IsAuthenticated,)
     
     def get(self, request, id_municipio):
         municipios = Municipio.objects.filter(id=id_municipio)
@@ -57,7 +55,6 @@ class EstadoMunicipio(APIView):
         return Response({'message':'No se encontro el municipio'},status=400)
 
 class MunicipiosEstadoList(APIView):
-    permission_classes = (IsAuthenticated,)
     
     def get(self, request, id_estado):
         estados_disponibles = Estado.objects.all().values_list('id', flat=True)
@@ -71,17 +68,19 @@ class MunicipiosEstadoList(APIView):
         return Response(municipios, status=200)
         
 class FiltrarIncidentes(APIView):
-    permission_classes = (IsAuthenticated,)
     
-    def get(self, request):
-        incidentes = Incidente.objects.all()
+    def post(self, request):
+        incidentes = Incidente.objects.all().order_by('-fecha')
         if request.POST.get('tipo_incidente'):
             incidentes = incidentes.filter(tipo_incidente=request.POST.get('tipo_incidente'))
-        if request.POST.get('municipio'):
+            
+        if request.POST.get('municipio') and int(request.POST.get('estado')) > 0:
             incidentes = incidentes.filter(municipio=request.POST.get('municipio'))
-        if request.POST.get('estado'):
+            
+        if request.POST.get('estado') and int(request.POST.get('estado')) > 0:
             incidentes = incidentes.filter(municipio__estado=request.POST.get('estado'))
+            
         if request.POST.get('fecha'):
-            incidentes = incidentes.filter(fecha=request.POST.get('fecha'))
+            incidentes = incidentes.filter(fecha__date=request.POST.get('fecha'))
         incidentes_json = IncidenteSerializer(incidentes, many=True)
         return Response(incidentes_json.data, status=200)

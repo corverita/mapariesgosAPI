@@ -27,6 +27,12 @@ class Tipo_Incidente(models.Model):
     def __str__(self):
         return self.nombre
     
+class Estado_Actual(models.Model):
+    descripcion = models.CharField('descripcion', max_length=50, unique=True, blank=False, null=False)
+    
+    def __str__(self):
+        return self.descripcion
+    
 class Incidente(models.Model):
     latitud = models.DecimalField('latitud',blank=False, null=False, max_digits=50, decimal_places=20)
     longitud = models.DecimalField('longitud', blank=False, null=False, max_digits=50, decimal_places=20)
@@ -34,6 +40,7 @@ class Incidente(models.Model):
     publicador = models.ForeignKey(User, on_delete=models.PROTECT, blank=False, null=False)
     tipo_incidente = models.ForeignKey(Tipo_Incidente, on_delete=models.PROTECT, blank=False, null=False)
     municipio = models.ForeignKey(Municipio, on_delete=models.PROTECT, blank=False, null=False, default = 2400)
+    estado_actual = models.ForeignKey(Estado_Actual, on_delete=models.PROTECT, blank=False, null=False, default = 0)
     
     def __str__(self):
         return f"{self.tipo_incidente} {self.fecha}"
