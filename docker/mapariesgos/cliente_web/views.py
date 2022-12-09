@@ -20,7 +20,7 @@ def home(request):
     context = {
         'incidentes' : incidentes,
         'lista_incidentes' : lista_incidentes,
-        'API_KEY': '',
+        'API_KEY': 'AIzaSyAPNmn1lmzIMabjcC3MBVhMTIBLvZ8S-58',
         'estados': Estado.objects.all(),
         'municipios': Municipio.objects.all(),
     }

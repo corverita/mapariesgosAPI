@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic import DetailView
 
 from .models import Incidente, Municipio, Estado
 from .serializers import IncidenteSerializer
@@ -7,6 +8,16 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
+
+def incidente_detail(request, id_incidente):
+    incidente = Incidente.objects.filter(id=id_incidente)
+    incidente_json = IncidenteSerializer(incidente, many=True)
+    return Response(incidente_json.data, status=200)
+
+class DetalleIncidente(DetailView):
+    model = Incidente
+    template_name = 'modal_info_incidente.html'
+    context_object_name = 'incidente'
 
 class ListaIncidentes(APIView):
     

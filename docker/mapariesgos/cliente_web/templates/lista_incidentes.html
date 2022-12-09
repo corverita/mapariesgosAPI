@@ -91,6 +91,10 @@
 
 </form>
 
+<div class="modal fade" id="modal-detalle" role="dialog">
+
+</div>
+
 <script>
     let map;
     var markers = [];
@@ -107,9 +111,7 @@
         {{lista_incidentes|safe}}.forEach((incidente) => {
             var marker = createMarker(parseFloat(incidente.latitud), parseFloat(incidente.longitud), incidente.tipo_incidente, {url: incidente.icon, scaledSize: new google.maps.Size(25, 25)});
             marker.addListener("click", () => {
-                infoWindow.close();
-                infoWindow.setContent(marker.getTitle());
-                infoWindow.open(marker.getMap(), marker);
+                abrirModal('/api/detalle-incidente/' + incidente.id);
             });
             markers.push(marker);
         });
@@ -132,7 +134,18 @@
 
     window.initMap = initMap;
 
+    function abrirModal(url){
+        $("#modal-detalle").load(url, function (){
+            $("#modal-detalle").modal("show");
+        });
 
+    }
+
+    function hideModal(){
+        $("#modal-detalle").modal("hide");
+    }
+
+    
     
 
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -166,9 +179,7 @@
                     )
                     var new_marker = createMarker(parseFloat(element.latitud), parseFloat(element.longitud), element.tipo_incidente, {url: element.icon, scaledSize: new google.maps.Size(25, 25)});
                     new_marker.addListener("click", () => {
-                        infoWindow.close();
-                        infoWindow.setContent(new_marker.getTitle());
-                        infoWindow.open(new_marker.getMap(), new_marker);
+                        abrirModal(incidente);
                     });
                     markers.push(new_marker);
                 });
