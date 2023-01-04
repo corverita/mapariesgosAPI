@@ -85,11 +85,11 @@ class FiltrarIncidentes(APIView):
         if request.POST.get('tipo_incidente'):
             incidentes = incidentes.filter(tipo_incidente=request.POST.get('tipo_incidente'))
             
-        if request.POST.get('municipio') and int(request.POST.get('estado')) > 0:
-            incidentes = incidentes.filter(municipio=request.POST.get('municipio'))
-            
         if request.POST.get('estado') and int(request.POST.get('estado')) > 0:
             incidentes = incidentes.filter(municipio__estado=request.POST.get('estado'))
+            
+        if request.POST.get('municipio') and int(request.POST.get('municipio')) > 0:
+            incidentes = incidentes.filter(municipio=request.POST.get('municipio'))
             
         if request.POST.get('fecha'):
             incidentes = incidentes.filter(fecha__date=request.POST.get('fecha'))

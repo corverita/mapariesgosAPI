@@ -95,8 +95,13 @@
 
 </div>
 
+<div class="modal fade" id="modal-nuevo-incidente" role="dialog">
+    {% include 'modal_nuevo_incidente.html' %}
+</div>
+
 <script>
     let map;
+    let geocoder;
     var markers = [];
     var infoWindow;
 
@@ -106,12 +111,18 @@
             center: { lat: 22.767470686050675, lng: -102.59196597852653 },
             zoom: 14,
         });
+        geocoder = new google.maps.Geocoder();
         infoWindow = new google.maps.InfoWindow();
+
+        map.addListener("click", (mapsMouseEvent) => {
+            infoWindow.close();
+            abrirModalNuevoIncidente(mapsMouseEvent.latLng.toJSON());
+        });
 
         {{lista_incidentes|safe}}.forEach((incidente) => {
             var marker = createMarker(parseFloat(incidente.latitud), parseFloat(incidente.longitud), incidente.tipo_incidente, {url: incidente.icon, scaledSize: new google.maps.Size(25, 25)});
             marker.addListener("click", () => {
-                abrirModal('/api/detalle-incidente/' + incidente.id);
+                abrirModalDetalle('/api/detalle-incidente/' + incidente.id);
             });
             markers.push(marker);
         });
@@ -134,19 +145,61 @@
 
     window.initMap = initMap;
 
-    function abrirModal(url){
+    function abrirModalDetalle(url){
         $("#modal-detalle").load(url, function (){
             $("#modal-detalle").modal("show");
         });
-
     }
 
-    function hideModal(){
-        $("#modal-detalle").modal("hide");
+    function abrirModalNuevoIncidente(json){
+        console.log(json);
+        $('#latitud').val(json.lat);
+        $('#longitud').val(json.lng);
+        geocodeLatLng();
+        $('#modal-nuevo-incidente').modal('show');
     }
 
+    function hideModal(modal){
+        $(modal).modal("hide");
+    }
     
-    
+    function geocodeLatLng() {
+        const lat = document.getElementById("latitud").value;
+        const lng = document.getElementById("longitud").value;
+        const latlng = {
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+        };
+        geocoder
+            .geocode({ location: latlng })
+            .then((response) => {
+                console.log(response);
+                if (response.results[0]) {
+                    var direccion = response.results[0];
+                    $('#direccion').val(direccion.formatted_address); 
+                    var municipio; //locality
+                    var estado; //administrative_area_level_1
+
+                    direccion.address_components.forEach( (direccion) =>{
+                        direccion.types.forEach( (tipo) => {
+                            if(tipo == "locality"){
+                                municipio = direccion.long_name;
+                            }
+                            if(tipo == "administrative_area_level_1"){
+                                estado = direccion.long_name;
+                            }
+                        })
+                    });
+                    document.getElementById('estado_form').setAttribute('value', estado);
+                    document.getElementById('municipio_form').setAttribute('value', municipio);
+                } else {
+                    window.alert("No results found");
+                }
+            })
+            .catch((e) => window.alert("Fallo al conseguir la direccion con el geodecoder: " + e));
+      }
+
+
 
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const form = document.querySelector('#map-filter-form');
@@ -179,7 +232,7 @@
                     )
                     var new_marker = createMarker(parseFloat(element.latitud), parseFloat(element.longitud), element.tipo_incidente, {url: element.icon, scaledSize: new google.maps.Size(25, 25)});
                     new_marker.addListener("click", () => {
-                        abrirModal(incidente);
+                        abrirModalDetalle(incidente);
                     });
                     markers.push(new_marker);
                 });
