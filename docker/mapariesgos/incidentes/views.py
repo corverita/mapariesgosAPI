@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import DetailView
 
-from .models import Incidente, Municipio, Estado
+from .models import Estado_Actual, Incidente, Municipio, Estado
 from .serializers import IncidenteSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -27,12 +27,26 @@ class ListaIncidentes(APIView):
         return Response(incidentes_json.data, status=200) # Se envia el JSON como texto al cliente que lo solicita
     
     def post(self, request):
+        print(request.user)
         dict = request.data.dict()
+        dict.pop('direccion')
+        print(dict)
         dict.update({'publicador': request.user.id}) # Agrego al diccionario el id del usuario que publica el incidente
+        estados = Estado.objects.filter(nombre=dict['estado'])
+        dict.update({'estado': estados.first().id if any(estados) else -1}) # Agrego al diccionario el estado del incidente (si no existe el estado, se asigna -1 y devuelve el error)
+        municipios = Municipio.objects.filter(nombre=dict['municipio'])
+        dict.update({'municipio': municipios.first().id if any(municipios) else -1}) # Agrego al diccionario el municipio del incidente (si no existe el municipio, se asigna -1 y devuelve el error)
+        dict.update({'latitud': float(dict['latitud'])}) # Convierto en el diccionario la latitud del incidente
+        dict.update({'longitud': float(dict['longitud'])}) # Convierto en el diccionario la longitud del incidente
+        dict.update({'tipo_incidente': int(dict['tipo_incidente'])}) # Convierto en el diccionario el tipo de incidente
+        dict.update({'estado_actual': Estado_Actual.objects.get(descripcion='Activo').id})
+        print(dict)
+        dict.pop('estado')
         incidente = IncidenteSerializer(data=dict) # Serializamos el diccionario a un objeto Incidente
         if incidente.is_valid(): # Si el incidente es valido
             incidente.save()
             return Response(incidente.data, status=200) # Retorno la informacion del incidente creado
+        print(incidente.errors)
         return Response(incidente.errors, status=400) # Retorno los errores que se pudieron dar en el transcurso de la validacion
 
     def put(self, request):
@@ -82,7 +96,7 @@ class FiltrarIncidentes(APIView):
     
     def post(self, request):
         incidentes = Incidente.objects.all().order_by('-fecha')
-        if request.POST.get('tipo_incidente'):
+        if request.POST.get('tipo_incidente') and int(request.POST.get('tipo_incidente')) > 0:
             incidentes = incidentes.filter(tipo_incidente=request.POST.get('tipo_incidente'))
             
         if request.POST.get('estado') and int(request.POST.get('estado')) > 0:

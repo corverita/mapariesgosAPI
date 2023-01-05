@@ -16,7 +16,7 @@
                                 Latitud:
                             </td>
                         <td>
-                            <input disabled type="number" name="latitud" id="latitud">
+                            <input readonly type="number" name="latitud" id="latitud">
                         </td>
                     </tr>
                     <tr>
@@ -24,7 +24,7 @@
                             Longitud
                         </td>
                         <td>
-                            <input disabled type="number" name="longitud" id="longitud">
+                            <input readonly type="number" name="longitud" id="longitud">
                         </td>
                     </tr>
                     <tr>
@@ -32,7 +32,7 @@
                             Direcci&oacute;n
                         </td>
                         <td>
-                            <input disabled type="text" name="direccion" id="direccion">
+                            <input readonly type="text" name="direccion" id="direccion">
                         </td>
                     </tr>
                     <tr>
@@ -40,7 +40,7 @@
                             Estado:
                         </td>
                         <td>
-                            <input disabled type="text" name="estado" id="estado_form" value="">
+                            <input readonly type="text" name="estado" id="estado_form" value="">
                         </td>
                     </tr>
                     <tr>
@@ -48,7 +48,7 @@
                             Municipio:
                         </td>
                         <td>
-                            <input disabled type="text" name="municipio" id="municipio_form">
+                            <input readonly type="text" name="municipio" id="municipio_form">
                         </td>
                     </tr>
                     <tr>
@@ -58,7 +58,7 @@
                         <td>
                             <div class='d-flex text-center align-items-center'>
                                 <label class="col-3">
-                                    <input type="radio" name="tipo_incidente_nuevo" id="tipo_incidente_nuevo" value="1" checked>
+                                    <input type="radio" name="tipo_incidente" id="tipo_incidente_nuevo" value="1" checked>
                                     <img src="{% static 'images/icons/ambulancia icon.png' %}" alt="Ambulancia" class="icon">
                                     <br>
                                     <p>
@@ -66,7 +66,7 @@
                                     </p>
                                 </label>
                                 <label class="col-3">
-                                    <input type="radio" name="tipo_incidente_nuevo" id="tipo_incidente_nuevo" value="2">
+                                    <input type="radio" name="tipo_incidente" id="tipo_incidente_nuevo" value="2">
                                     <img src="{% static 'images/icons/choque icon.png' %}" alt="Accidente de tráfico" class="icon">
                                     <br>
                                     <p>
@@ -76,7 +76,7 @@
                                     </p>
                                 </label>
                                 <label class="col-3">
-                                    <input type="radio" name="tipo_incidente_nuevo" id="tipo_incidente_nuevo" value="3">
+                                    <input type="radio" name="tipo_incidente" id="tipo_incidente_nuevo" value="3">
                                     <img src="{% static 'images/icons/gun icon.png' %}" alt="Tiroteo" class="icon">
                                     <br>
                                     <p>
@@ -84,7 +84,7 @@
                                     </p>
                                 </label>
                                 <label class="col-3">
-                                    <input type="radio" name="tipo_incidente_nuevo" id="tipo_incidente_nuevo" value="4">
+                                    <input type="radio" name="tipo_incidente" id="tipo_incidente_nuevo" value="4">
                                     <img src="{% static 'images/icons/robber icon.png' %}" alt="Asaltante" class="icon">
                                     <br>
                                     <p>Asaltante</p>
@@ -94,10 +94,10 @@
                     </tr>
                 </table>
             </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" onclick="hideModal('#modal-nuevo-incidente')">Cancelar</button>            
+                <button class="btn btn-success" type="submit" id="boton-publicar-incidente">Publicar</button>
+            </div>
         </form>
-        <div class="modal-footer">
-            <button class="btn btn-danger" type="button" onclick="hideModal('#modal-nuevo-incidente')">Cancelar</button>            
-            <button class="btn btn-success" type="button">Publicar</button>
-        </div>
     </div>
 </div>

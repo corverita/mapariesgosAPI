@@ -19,76 +19,84 @@
                     <option value="{{ estado.id }}">{{ estado.nombre }}</option>
                 {% endfor %}
             </Select>
+        </div>
+        <div class='col-6 p-4'>
+            <Select name='municipio' id='municipio' class="margin-0 form-select form-select-sm select-filtrar">
+                <option value="-1">Municipio</option>
+                {% for municipio in municipios %}
+                    <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                {% endfor %}
+            </Select>
+        </div>
     </div>
-    <div class='col-6 p-4'>
-        <Select name='municipio' id='municipio' class="margin-0 form-select form-select-sm select-filtrar">
-            <option value="-1">Municipio</option>
-            {% for municipio in municipios %}
-                <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
-            {% endfor %}
-        </Select>
-    </div>
-</div>
-<div class='d-flex text-center'>
-    <label class="col-3">
-        <input type="radio" name="tipo_incidente" id="Ambulancia" value="1" checked>
-        <img src="{% static 'images/icons/ambulancia icon.png' %}" alt="Ambulancia" class="icon">
-        <br>
-        <p>
-            Ambulancia
-        </p>
-    </label>
-    <label class="col-3">
-        <input type="radio" name="tipo_incidente" id="Ambulancia" value="2">
-        <img src="{% static 'images/icons/choque icon.png' %}" alt="Accidente de tráfico" class="icon">
-        <br>
-        <p>
-            Accidente de
+    <div class='d-flex text-center'>
+        <label class="col-1"></label>
+        <label class="col-2">
+            <input type="radio" name="tipo_incidente" id="Ambulancia" value="-1" checked>
+            <img src="{% static 'images/icons/ambulancia icon.png' %}" alt="Ambulancia" class="icon">
             <br>
-            tráfico
-        </p>
-    </label>
-    <label class="col-3">
-        <input type="radio" name="tipo_incidente" id="Ambulancia" value="3">
-        <img src="{% static 'images/icons/gun icon.png' %}" alt="Tiroteo" class="icon">
-        <br>
-        <p>
-            Tiroteo
-        </p>
-    </label>
-    <label class="col-3">
-        <input type="radio" name="tipo_incidente" id="Ambulancia" value="4">
-        <img src="{% static 'images/icons/robber icon.png' %}" alt="Asaltante" class="icon">
-        <br>
-        <p>Asaltante</p>
-    </label>
-</div>
-
-<div class="d-block">
-    <div class="col-12 w-100 text-center">
-        <button class="btn btn-primary boton-filtrar p-3" type="submit">Filtrar</button>
+            <p>
+                Todos
+            </p>
+        </label>
+        <label class="col-2">
+            <input type="radio" name="tipo_incidente" id="Ambulancia" value="1">
+            <img src="{% static 'images/icons/ambulancia icon.png' %}" alt="Ambulancia" class="icon">
+            <br>
+            <p>
+                Ambulancia
+            </p>
+        </label>
+        <label class="col-2">
+            <input type="radio" name="tipo_incidente" id="Ambulancia" value="2">
+            <img src="{% static 'images/icons/choque icon.png' %}" alt="Accidente de tráfico" class="icon">
+            <br>
+            <p>
+                Accidente de
+                <br>
+                tráfico
+            </p>
+        </label>
+        <label class="col-2">
+            <input type="radio" name="tipo_incidente" id="Ambulancia" value="3">
+            <img src="{% static 'images/icons/gun icon.png' %}" alt="Tiroteo" class="icon">
+            <br>
+            <p>
+                Tiroteo
+            </p>
+        </label>
+        <label class="col-2">
+            <input type="radio" name="tipo_incidente" id="Ambulancia" value="4">
+            <img src="{% static 'images/icons/robber icon.png' %}" alt="Asaltante" class="icon">
+            <br>
+            <p>Asaltante</p>
+        </label>
     </div>
-    <div class="d-flex">
-        <ul class="col-12 list-group lista" id="lista-incidentes">
-            {% for incidente in incidentes %}
-                <li class="list-group-item incidente p-3 my-0">
-                    <div class=" d-flex justify-content-between align-items-center" onclick="redirigirMapa('{{incidente.tipo_incidente}}','{{incidente.latitud}}','{{incidente.longitud}}')">
-                        <div class="text-start">
-                            <img src="{{incidente.icon}}" alt="{{incidente.tipo_incidente}}" class="icon">
-                        </div>
-                        <div class="text-center">
-                            {{incidente.tipo_incidente}}
-                        </div>
-                        <div class="text-center">
-                            {{incidente.publicador}}
-                        </div>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
+    <div class="d-block">
+        <div class="col-12 w-100 text-center">
+            <button class="btn btn-primary boton-filtrar p-3" type="submit">Filtrar</button>
+        </div>
+        <div class="d-flex">
+            <ul class="col-12 list-group lista" id="lista-incidentes">
+                {% for incidente in incidentes %}
+                    <li class="list-group-item incidente p-3 my-0" onclick="redirigirMapa('{{incidente.tipo_incidente}}','{{incidente.latitud}}','{{incidente.longitud}}')">
+                        <div class=" d-flex justify-content-between align-items-center">
+                            <div class="text-start">
+                                <img src="{{incidente.icon}}" alt="{{incidente.tipo_incidente}}" class="icon">
+                            </div>
+                            <div class="text-center">
+                                {{incidente.tipo_incidente}}
+                            </div>
+                            <div class="text-center">
+                                {{incidente.publicador}}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </form>
 
 <div class="modal fade" id="modal-detalle" role="dialog">
@@ -152,7 +160,6 @@
     }
 
     function abrirModalNuevoIncidente(json){
-        console.log(json);
         $('#latitud').val(json.lat);
         $('#longitud').val(json.lng);
         geocodeLatLng();
@@ -173,7 +180,6 @@
         geocoder
             .geocode({ location: latlng })
             .then((response) => {
-                console.log(response);
                 if (response.results[0]) {
                     var direccion = response.results[0];
                     $('#direccion').val(direccion.formatted_address); 
@@ -204,7 +210,7 @@
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const form = document.querySelector('#map-filter-form');
 
-    function sendForm(event){
+    function filtrar_incidentes(event){
         event.preventDefault();
         const request = new Request(
             "{% url 'api:filtrar_incidentes' %}",{
@@ -225,21 +231,52 @@
                 $("#lista-incidentes ul").empty();
                 markers.forEach(marker => marker.setMap(null));
                 data.forEach(element => {
-                    $("#lista-incidentes ul").append('<li class="list-group-item incidente p-3 my-0"><div class="d-flex justify-content-between align-items-center"><div class="text-start"><img src="'+element.icon+'" alt="'+element.tipo_incidente+'" class="icon"></div><div class="text-center">'+element.tipo_incidente+'</div><div class="text-center">'+element.publicador.username+'</div></div></li>').on(
-                        "click", () => {
-                            redirigirMapa(element.tipo_incidente, parseFloat(element.latitud), parseFloat(element.longitud));
-                        }
-                    )
+                    $("#lista-incidentes ul").append('<li class="list-group-item incidente p-3 my-0"><div class="d-flex justify-content-between align-items-center"><div class="text-start"><img src="'+element.icon+'" alt="'+element.tipo_incidente+'" class="icon"></div><div class="text-center">'+element.tipo_incidente+'</div><div class="text-center">'+element.publicador.username+'</div></div></li>');
+                    $("#lista-incidentes ul li:last-child").attr('onClick', 'redirigirMapa("'+element.tipo_incidente+'", '+element.latitud+', '+element.longitud+')');
                     var new_marker = createMarker(parseFloat(element.latitud), parseFloat(element.longitud), element.tipo_incidente, {url: element.icon, scaledSize: new google.maps.Size(25, 25)});
                     new_marker.addListener("click", () => {
-                        abrirModalDetalle(incidente);
+                        abrirModalDetalle('/api/detalle-incidente/' + element.id);
                     });
                     markers.push(new_marker);
                 });
             });
     }
-    form.addEventListener('submit', sendForm);
+    form.addEventListener('submit', filtrar_incidentes);
 
+    const form_nuevo_incidente = document.querySelector('#form-nuevo-incidente');
+    
+    function publicar_incidente(event){
+        event.preventDefault();
+        console.log(new FormData(form_nuevo_incidente));
+        const request = new Request(
+            "{% url 'api:incidentes' %}",{
+                method: 'POST',
+                headers: {  'X-CSRFToken': csrfToken,
+                            'Authorization': 'Token {{token}}'},
+                mode: 'same-origin',
+                body: new FormData(form_nuevo_incidente)
+            }
+        );
+        fetch(request)
+            .then((response) => {
+                if (response.ok){
+                    return response.json();
+                }
+                throw new Error('No recibi respuesta del servidor');
+            })
+            .then(function(data) {
+                console.log(data);
+                hideModal('#modal-nuevo-incidente');
+                $("#lista-incidentes ul li:first").before('<li class="list-group-item incidente p-3 my-0"><div class="d-flex justify-content-between align-items-center"><div class="text-start"><img src="'+data.icon+'" alt="'+data.tipo_incidente+'" class="icon"></div><div class="text-center">'+data.tipo_incidente+'</div><div class="text-center">'+data.publicador.username+'</div></div></li>');
+                $("#lista-incidentes ul li:first").attr('onClick', 'redirigirMapa("'+data.tipo_incidente+'", '+data.latitud+', '+data.longitud+')');
+                var new_marker = createMarker(parseFloat(data.latitud), parseFloat(data.longitud), data.tipo_incidente, {url: data.icon, scaledSize: new google.maps.Size(25, 25)});
+                new_marker.addListener("click", () => {
+                    abrirModalDetalle('/api/detalle-incidente/' + data.id);
+                });
+                markers.push(new_marker);
+            });
+    }
+    form_nuevo_incidente.addEventListener('submit', publicar_incidente);
 
     
 </script>
