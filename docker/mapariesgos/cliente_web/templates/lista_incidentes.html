@@ -75,6 +75,9 @@
 
     <div class="d-block">
         <div class="col-12 w-100 text-center">
+            <a class="btn btn-secondary boton-filtrar p-3">Limpiar</a>
+        </div>
+        <div class="col-12 w-100 text-center">
             <button class="btn btn-primary boton-filtrar p-3" type="submit">Filtrar</button>
         </div>
         <div class="d-flex">
@@ -247,7 +250,6 @@
     
     function publicar_incidente(event){
         event.preventDefault();
-        console.log(new FormData(form_nuevo_incidente));
         const request = new Request(
             "{% url 'api:incidentes' %}",{
                 method: 'POST',
@@ -259,13 +261,16 @@
         );
         fetch(request)
             .then((response) => {
-                if (response.ok){
+                if (response.ok || response.status == 400){
                     return response.json();
                 }
                 throw new Error('No recibi respuesta del servidor');
             })
             .then(function(data) {
-                console.log(data);
+                if (data['errors']){
+                    alert(data['message'])
+                    return;
+                }
                 hideModal('#modal-nuevo-incidente');
                 $("#lista-incidentes ul li:first").before('<li class="list-group-item incidente p-3 my-0"><div class="d-flex justify-content-between align-items-center"><div class="text-start"><img src="'+data.icon+'" alt="'+data.tipo_incidente+'" class="icon"></div><div class="text-center">'+data.tipo_incidente+'</div><div class="text-center">'+data.publicador.username+'</div></div></li>');
                 $("#lista-incidentes ul li:first").attr('onClick', 'redirigirMapa("'+data.tipo_incidente+'", '+data.latitud+', '+data.longitud+')');

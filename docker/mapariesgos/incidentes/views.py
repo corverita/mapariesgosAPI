@@ -6,6 +6,7 @@ from .serializers import IncidenteSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
 # Create your views here.
 
@@ -27,27 +28,30 @@ class ListaIncidentes(APIView):
         return Response(incidentes_json.data, status=200) # Se envia el JSON como texto al cliente que lo solicita
     
     def post(self, request):
-        print(request.user)
         dict = request.data.dict()
-        dict.pop('direccion')
         print(dict)
+        dict.pop('direccion')
         dict.update({'publicador': request.user.id}) # Agrego al diccionario el id del usuario que publica el incidente
         estados = Estado.objects.filter(nombre=dict['estado'])
-        dict.update({'estado': estados.first().id if any(estados) else -1}) # Agrego al diccionario el estado del incidente (si no existe el estado, se asigna -1 y devuelve el error)
-        municipios = Municipio.objects.filter(nombre=dict['municipio'])
+        dict.update({'estado': estados.first().id if any(estados) else -1}) # Agrego al diccionario el estado del incidente
+        municipios = Municipio.objects.filter(nombre=dict['municipio'], estado=dict['estado'])
         dict.update({'municipio': municipios.first().id if any(municipios) else -1}) # Agrego al diccionario el municipio del incidente (si no existe el municipio, se asigna -1 y devuelve el error)
         dict.update({'latitud': float(dict['latitud'])}) # Convierto en el diccionario la latitud del incidente
         dict.update({'longitud': float(dict['longitud'])}) # Convierto en el diccionario la longitud del incidente
         dict.update({'tipo_incidente': int(dict['tipo_incidente'])}) # Convierto en el diccionario el tipo de incidente
         dict.update({'estado_actual': Estado_Actual.objects.get(descripcion='Activo').id})
         print(dict)
-        dict.pop('estado')
+        
         incidente = IncidenteSerializer(data=dict) # Serializamos el diccionario a un objeto Incidente
         if incidente.is_valid(): # Si el incidente es valido
             incidente.save()
             return Response(incidente.data, status=200) # Retorno la informacion del incidente creado
-        print(incidente.errors)
-        return Response(incidente.errors, status=400) # Retorno los errores que se pudieron dar en el transcurso de la validacion
+        response = {
+            'status': 'Bad request',
+            'message': 'Hubo un problema al registrar el incidente.',
+            'errors': incidente.errors
+        }
+        return Response(response, status=status.HTTP_400_BAD_REQUEST) # Retorno los errores que se pudieron dar en el transcurso de la validacion
 
     def put(self, request):
         incidente = Incidente.objects.get(id=request.POST.get('incidente'))
