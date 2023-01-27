@@ -19,16 +19,15 @@ def home(request):
         incidente.icon = iconos[str(incidente.tipo_incidente)]
         lista_incidentes.append(IncidenteSerializer(incidente).data)
     form_incidente = IncidenteForm()
-    if request.user:
+    if request.user.is_authenticated:
         token = Token.objects.get_or_create(user=request.user)
     
     context = {
         'incidentes' : incidentes,
         'lista_incidentes' : lista_incidentes,
-        'API_KEY': '',
+        'API_KEY': 'AIzaSyAPNmn1lmzIMabjcC3MBVhMTIBLvZ8S-58',
         'estados': Estado.objects.all(),
-        'municipios': Municipio.objects.all(),
         'form_incidente': form_incidente,
-        'token': token[0].key if request.user else '',
+        'token': token[0].key if request.user.is_authenticated else '',
     }
     return render(request, 'home.html', context)

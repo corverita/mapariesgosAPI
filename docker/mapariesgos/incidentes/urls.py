@@ -9,7 +9,7 @@ urlpatterns=[
     path('incidentes/', views.ListaIncidentes.as_view(), name='incidentes'), # Retorna la lista de todos los incidentes
     path('incidentes/<int:pk>/', views.incidente_detail, name='incidente'), # Retorna la informacion de un incidente en especifico
     path('detalle-incidente/<int:pk>/', views.DetalleIncidente.as_view(), name='detalle_incidente'), # Retorna la informacion de un incidente en especifico
-    path('municipios/<int:id_estado>/', views.MunicipiosEstadoList.as_view()), # Retorna la lista de municipios de un estado
+    path('municipios/<int:id_estado>/', views.MunicipiosEstadoList.as_view(), name='filtrar_municipios'), # Retorna la lista de municipios de un estado
     path('estado-municipio/<int:id_municipio>/', views.EstadoMunicipio.as_view()), # Retorna el estado de un municipio
     path('filtrar-incidentes/', views.FiltrarIncidentes.as_view(), name='filtrar_incidentes'), # Retorna la lista de incidentes filtrados por los parametros enviados
     

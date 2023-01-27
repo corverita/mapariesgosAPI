@@ -19,6 +19,11 @@ class DetalleIncidente(DetailView):
     model = Incidente
     template_name = 'modal_info_incidente.html'
     context_object_name = 'incidente'
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update({'estados_actuales': Estado_Actual.objects.all})
+        return context
 
 class ListaIncidentes(APIView):
     
@@ -29,7 +34,6 @@ class ListaIncidentes(APIView):
     
     def post(self, request):
         dict = request.data.dict()
-        print(dict)
         dict.pop('direccion')
         dict.update({'publicador': request.user.id}) # Agrego al diccionario el id del usuario que publica el incidente
         estados = Estado.objects.filter(nombre=dict['estado'])
@@ -40,7 +44,6 @@ class ListaIncidentes(APIView):
         dict.update({'longitud': float(dict['longitud'])}) # Convierto en el diccionario la longitud del incidente
         dict.update({'tipo_incidente': int(dict['tipo_incidente'])}) # Convierto en el diccionario el tipo de incidente
         dict.update({'estado_actual': Estado_Actual.objects.get(descripcion='Activo').id})
-        print(dict)
         
         incidente = IncidenteSerializer(data=dict) # Serializamos el diccionario a un objeto Incidente
         if incidente.is_valid(): # Si el incidente es valido
@@ -88,7 +91,6 @@ class MunicipiosEstadoList(APIView):
     def get(self, request, id_estado):
         estados_disponibles = Estado.objects.all().values_list('id', flat=True)
         estados_disponibles = list(estados_disponibles)
-        print(estados_disponibles)
         if id_estado not in estados_disponibles:
             return Response({'message':'No se encontro el estado'},status=400)
         

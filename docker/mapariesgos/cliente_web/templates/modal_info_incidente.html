@@ -8,6 +8,25 @@
         </div>
         <div class="modal-body">
             <table class="table table-responsive-sm">
+                {% if user.is_authenticated and request.user.username == incidente.publicador.username %}
+                <tr>
+                    <td>
+                        Publicado por:
+                    </td>
+                    <td>
+                        Ti
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>
+                        Publicado por:
+                    </td>
+                    <td>
+                        {{incidente.publicador}}
+                    </td>
+                </tr>
+                {% endif %}
                 <tr>
                     <td>
                         Fecha:
@@ -48,10 +67,37 @@
                         {{incidente.tipo_incidente}}
                     </td>
                 </tr>
+                {% if user.is_authenticated and request.user.username == incidente.publicador.username %}
+                <form>
+                    <tr>
+                        <td>
+                            Estado Actual:
+                        </td>
+                        <td>
+                            <select name="estado_actual" id="estado_actual">
+                                {% for estado in estados_actuales %}
+                                    <option value="{{estado.id}}">{{estado}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                {% else %}
+                
+                <tr>
+                    <td>
+                        Estado Actual:
+                    </td>
+                    <td>
+                        {{incidente.estado_actual}}
+                    </td>
+                </tr>
+                {% endif %}
             </table>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-danger" type="button" onclick="hideModal('#modal-detalle')">Cerrar</button>            
+            <button class="btn btn-warning" type="button" onclick="hideModal('#modal-detalle')">Cerrar</button>
+            <button class="btn btn-danger" type="button" onclick="hideModal('#modal-detalle')">Eliminar</button>
+            <button class="btn btn-primary" type="button" onclick="hideModal('#modal-detalle')">Guardar</button>
         </div>
     </div>
 </div>

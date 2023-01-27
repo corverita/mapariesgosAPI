@@ -31,6 +31,7 @@ class IncidenteSerializer(serializers.ModelSerializer):
         response['tipo_incidente'] = instance.tipo_incidente.nombre
         response['municipio'] = MunicipioSerializer(instance.municipio).data
         response['icon'] = iconos[str(instance.tipo_incidente)]
+        response['estado_actual'] = instance.estado_actual.descripcion
         return response
     
     def create(self, validated_data):
