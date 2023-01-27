@@ -25,7 +25,7 @@ def home(request):
     context = {
         'incidentes' : incidentes,
         'lista_incidentes' : lista_incidentes,
-        'API_KEY': 'AIzaSyAPNmn1lmzIMabjcC3MBVhMTIBLvZ8S-58',
+        'API_KEY': '',
         'estados': Estado.objects.all(),
         'form_incidente': form_incidente,
         'token': token[0].key if request.user.is_authenticated else '',
